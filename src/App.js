@@ -1,25 +1,78 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Filter from "./Filter";
+import Navbar from "./Navbar";
+import Search from "./Search";
+import Table from "./Table";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    movies: [],
+    genre: [],
+    selectedFilter: "All Genres",
+  };
+
+  setFilter = (filter) => {
+    this.setState({ selectedFilter: filter });
+  };
+
+  toggleLike = (id) => {
+    let index = this.state.movies.findIndex((el) => {
+      return el._id == id;
+    });
+
+    let currMoviesArr = this.state.movies.map((el) => el);
+
+    if (currMoviesArr[index].liked) {
+      currMoviesArr[index].liked = false;
+    } else {
+      currMoviesArr[index].liked = true;
+    }
+
+    this.setState({ movies: currMoviesArr });
+  };
+
+  componentDidMount() {
+    //i will get data here
+
+    let f = async () => {
+      let responseGenre = await fetch("/genre");
+      let responseMovies = await fetch("/movies");
+
+      let moviesJson = await responseMovies.json();
+      let genreJson = await responseGenre.json();
+
+      this.setState({
+        movies: moviesJson,
+        genre: genreJson,
+      });
+    };
+
+    f();
+  }
+
+  render() {
+    return (
+      <div>
+        <Navbar />
+
+        <div className="row">
+          <Filter
+            handleFilter={this.setFilter}
+            selectedFilter={this.state.selectedFilter}
+            genreData={this.state.genre}
+          />
+          <div className="col-9 p-4">
+            <Search />
+            <Table
+              toggleLike={this.toggleLike}
+              selectedFilter={this.state.selectedFilter}
+              moviesData={this.state.movies}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;

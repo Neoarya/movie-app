@@ -1,0 +1,12 @@
+.tble-dlt-btn{
+    background-color: red;
+    outline: none;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 8px;
+}
+
+.material-icons-outlined{
+    color: red;
+}
