@@ -3,13 +3,13 @@ import React from "react";
 let Filter = (props) => {
   return (
     <div className="col-3">
-      <ul className="list-group m-4">
+      <ul className="list-group m-4 ">
         <li
           onClick={() => {
             props.handleFilter("All Genres");
           }}
           className={`list-group-item ${
-            props.selectedFilter == "All Genres" ? "active" : ""
+            props.selectedFilter === "All Genres" ? "active" : ""
           }`}
         >
           All Genres
@@ -22,7 +22,7 @@ let Filter = (props) => {
               }}
               key={el._id}
               className={`list-group-item ${
-                props.selectedFilter == el.name ? "active" : ""
+                props.selectedFilter === el.name ? "active" : ""
               }`}
             >
               {el.name}

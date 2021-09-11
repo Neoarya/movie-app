@@ -1,23 +1,35 @@
 import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import Filter from "./Filter";
 import Navbar from "./Navbar";
 import Search from "./Search";
 import Table from "./Table";
+import Login from "./Login";
+import Customers from "./Customers";
+import Rentals from "./Rentals";
+import "./App.css";
 
 class App extends React.Component {
   state = {
     movies: [],
     genre: [],
     selectedFilter: "All Genres",
+    search: "",
+  };
+
+  updateSearch = (searchString) => {
+    this.setState({ search: searchString });
   };
 
   setFilter = (filter) => {
     this.setState({ selectedFilter: filter });
   };
 
+
   toggleLike = (id) => {
     let index = this.state.movies.findIndex((el) => {
-      return el._id == id;
+      return el._id === id;
     });
 
     let currMoviesArr = this.state.movies.map((el) => el);
@@ -29,6 +41,14 @@ class App extends React.Component {
     }
 
     this.setState({ movies: currMoviesArr });
+  };
+
+  deleteMovie = (id) => {
+    let filteredArr = this.state.movies.filter((el) => {
+      return el._id !== id;
+    });
+
+    this.setState({ movies: filteredArr });
   };
 
   componentDidMount() {
@@ -52,25 +72,46 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Navbar />
-
-        <div className="row">
-          <Filter
-            handleFilter={this.setFilter}
-            selectedFilter={this.state.selectedFilter}
-            genreData={this.state.genre}
-          />
-          <div className="col-9 p-4">
-            <Search />
-            <Table
-              toggleLike={this.toggleLike}
-              selectedFilter={this.state.selectedFilter}
-              moviesData={this.state.movies}
-            />
-          </div>
+      <Router>
+        <div>
+          <Navbar />
+          <Switch>
+            
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/rentals">
+              <Rentals />
+            </Route>
+            <Route path="/customers">
+              <Customers />
+            </Route>
+            <Route path="/">
+              <div className="row">
+                <Filter
+                  handleFilter={this.setFilter}
+                  selectedFilter={this.state.selectedFilter}
+                  genreData={this.state.genre}
+                />
+                <div className="col-9 p-4">
+                  <Search
+                    search={this.state.search}
+                    updateSearch={this.updateSearch}
+                    total={this.state.movies.length}
+                  />
+                  <Table
+                    search={this.state.search}
+                    deleteMovie={this.deleteMovie}
+                    toggleLike={this.toggleLike}
+                    selectedFilter={this.state.selectedFilter}
+                    moviesData={this.state.movies}
+                  />
+                </div>
+              </div>
+            </Route>
+          </Switch>
         </div>
-      </div>
+      </Router>
     );
   }
 }
